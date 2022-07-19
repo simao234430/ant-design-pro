@@ -3,6 +3,7 @@ import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
+  tabsLayout?: boolean;
 } = {
   navTheme: 'light',
   // 拂晓蓝
@@ -16,6 +17,7 @@ const Settings: LayoutSettings & {
   pwa: false,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
+  tabsLayout: true,
 };
 
 export default Settings;

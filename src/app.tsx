@@ -7,6 +7,7 @@ import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getRoutersInfo } from './services/session';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -14,6 +15,23 @@ const loginPath = '/user/login';
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
+};
+
+import {
+  AppstoreOutlined,
+  SmileOutlined,
+  TableOutlined,
+  SoundOutlined,
+  CrownOutlined,
+} from '@ant-design/icons';
+
+// 利用对象进行图标映射
+const iconMapping = {
+  AppstoreOutlined: <AppstoreOutlined />,
+  SmileOutlined: <SmileOutlined />,
+  TableOutlined: <TableOutlined />,
+  SoundOutlined: <SoundOutlined />,
+  CrownOutlined: <CrownOutlined />,
 };
 
 /**
@@ -78,9 +96,27 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         ]
       : [],
     menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
+    menu: {
+      // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+      params: {
+        userId: initialState?.currentUser?.userId,
+      },
+      request: async () => {
+        // if (!initialState?.currentUser?.userId) {
+        //   return [];
+        // }
+        // initialState.currentUser 中包含了所有用户信息
+        const menus = await getRoutersInfo();
+        console.log('menus');
+        setInitialState((preInitialState) => ({
+          ...preInitialState,
+          menus,
+        }));
+        // menus.forEach((item: any) => (item.icon = iconMapping[item.meta.icon]));
+        return menus;
+      },
+    },
+
     childrenRender: (children, props) => {
       // if (initialState?.loading) return <PageLoading />;
       return (

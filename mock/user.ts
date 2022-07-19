@@ -229,6 +229,44 @@ export default {
           link: null,
         },
       },
+      {
+        name: 'dashboard',
+        path: '/dashboard',
+        meta: {
+          title: 'dashboard',
+          icon: 'TableOutlined',
+          noCache: false,
+          link: null,
+        },
+        icon: 'dashboard',
+        component: '@/layouts/TabsLayout',
+        children: [
+          {
+            name: 'analysis',
+
+            path: '/dashboard/analysis',
+            component: './dashboard/analysis',
+            meta: {
+              title: '在线用户',
+              icon: 'SmileOutlined',
+              noCache: false,
+              link: null,
+            },
+          },
+          {
+            name: 'monitor',
+
+            path: '/dashboard/monitor',
+            component: './dashboard/monitor',
+            meta: {
+              title: '在线用户',
+              icon: 'online',
+              noCache: false,
+              link: null,
+            },
+          },
+        ],
+      },
     ],
   },
 };
