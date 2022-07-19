@@ -30,17 +30,17 @@ const getAccess = () => {
 export default {
   // 支持值为 Object 和 Array
   'GET /api/currentUser': (req: Request, res: Response) => {
-    if (!getAccess()) {
-      res.status(401).send({
-        data: {
-          isLogin: false,
-        },
-        errorCode: '401',
-        errorMessage: '请先登录！',
-        success: true,
-      });
-      return;
-    }
+    // if (!getAccess()) {
+    //   res.status(401).send({
+    //     data: {
+    //       isLogin: false,
+    //     },
+    //     errorCode: '401',
+    //     errorMessage: '请先登录！',
+    //     success: true,
+    //   });
+    //   return;
+    // }
     res.send({
       success: true,
       data: {
@@ -200,4 +200,35 @@ export default {
   },
 
   'GET  /api/login/captcha': getFakeCaptcha,
+
+  'GET /api/getRouters': {
+    msg: '操作成功',
+    code: 200,
+    data: [
+      {
+        name: 'welcome',
+        path: '/welcome',
+        hidden: false,
+        redirect: 'noRedirect',
+        component: 'Layout',
+        alwaysShow: true,
+        meta: {
+          title: '欢迎',
+          icon: 'SmileOutlined',
+          noCache: false,
+          link: null,
+        },
+      },
+      {
+        name: 'list.table-list',
+        path: '/list',
+        meta: {
+          title: '查询表格',
+          icon: 'TableOutlined',
+          noCache: false,
+          link: null,
+        },
+      },
+    ],
+  },
 };
