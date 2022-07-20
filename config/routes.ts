@@ -17,7 +17,7 @@
     path: '/dashboard',
     name: 'dashboard',
     icon: 'smile',
-    component: '@/layouts/TabsLayout',
+    // component: '@/layouts/TabsLayout',
     routes: [
       {
         path: '/dashboard',

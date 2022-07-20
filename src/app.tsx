@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer';
-import RightContent from '@/components/RightContent';
+// import RightContent from '@/components/RightContent';
+import TagView from '@/components/TagView';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading, SettingDrawer } from '@ant-design/pro-layout';
@@ -8,6 +9,7 @@ import { history, Link } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { getRoutersInfo } from './services/session';
+import EventEmitter from '@/utils/eventEmitter';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -17,22 +19,22 @@ export const initialStateConfig = {
   loading: <PageLoading />,
 };
 
-import {
-  AppstoreOutlined,
-  SmileOutlined,
-  TableOutlined,
-  SoundOutlined,
-  CrownOutlined,
-} from '@ant-design/icons';
+// import {
+//   AppstoreOutlined,
+//   SmileOutlined,
+//   TableOutlined,
+//   SoundOutlined,
+//   CrownOutlined,
+// } from '@ant-design/icons';
 
 // 利用对象进行图标映射
-const iconMapping = {
-  AppstoreOutlined: <AppstoreOutlined />,
-  SmileOutlined: <SmileOutlined />,
-  TableOutlined: <TableOutlined />,
-  SoundOutlined: <SoundOutlined />,
-  CrownOutlined: <CrownOutlined />,
-};
+// const iconMapping = {
+//   AppstoreOutlined: <AppstoreOutlined />,
+//   SmileOutlined: <SmileOutlined />,
+//   TableOutlined: <TableOutlined />,
+//   SoundOutlined: <SoundOutlined />,
+//   CrownOutlined: <CrownOutlined />,
+// };
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -70,7 +72,11 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    rightContentRender: () => <RightContent />,
+    rightContentRender: () => <TagView />,
+    contentStyle: {
+      paddingTop: '34px',
+    },
+    // rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     // waterMarkProps: {
     //   content: initialState?.currentUser?.name,
@@ -81,6 +87,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
+      }
+
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      } else {
+        EventEmitter.emit('routerChange', location);
       }
     },
     links: isDev
