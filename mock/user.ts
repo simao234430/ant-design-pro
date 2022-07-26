@@ -247,7 +247,7 @@ export default {
             path: '/dashboard/analysis',
             component: './dashboard/analysis',
             meta: {
-              title: '在线用户',
+              title: '分析页',
               icon: 'SmileOutlined',
               noCache: false,
               link: null,
@@ -259,7 +259,19 @@ export default {
             path: '/dashboard/monitor',
             component: './dashboard/monitor',
             meta: {
-              title: '在线用户',
+              title: '监控页',
+              icon: 'online',
+              noCache: false,
+              link: null,
+            },
+          },
+          {
+            name: 'workplace',
+
+            path: '/dashboard/workplace',
+            component: './dashboard/workplace',
+            meta: {
+              title: '工作台',
               icon: 'online',
               noCache: false,
               link: null,
