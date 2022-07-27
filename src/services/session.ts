@@ -9,7 +9,6 @@ export async function getUserInfo(options?: Record<string, any>) {
     ...(options || {}),
   });
 }
-
 /** 退出登录接口 POST /api/login/outLogin */
 export async function logout(options?: Record<string, any>) {
   return request<Record<string, any>>('/api/logout', {

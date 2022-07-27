@@ -24,9 +24,9 @@ declare namespace API {
   };
 
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    code?: number;
+    msg?: string;
+    token?: string;
   };
 
   type PageParams = {
@@ -97,5 +97,13 @@ declare namespace API {
     datetime?: string;
     description?: string;
     type?: NoticeIconItemType;
+  };
+
+  type GetUserInfoResult = {
+    code?: number;
+    msg?: string;
+    permissions?: string[];
+    roles?: string[];
+    user?: CurrentUser;
   };
 }

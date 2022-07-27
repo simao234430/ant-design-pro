@@ -7,8 +7,8 @@ import { PageLoading, SettingDrawer } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
-import { getRoutersInfo } from './services/session';
+// import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getRoutersInfo, getUserInfo } from './services/session';
 import EventEmitter from '@/utils/eventEmitter';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -47,20 +47,24 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
-      return msg.data;
+      const resp = await getUserInfo();
+      if (resp === undefined || resp.code !== 200) {
+        history.push(loginPath);
+      } else {
+        return { ...resp.user, permissions: resp.permissions } as API.CurrentUser;
+      }
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+  // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
-      fetchUserInfo,
-      currentUser,
       settings: defaultSettings,
+      currentUser,
+      fetchUserInfo,
     };
   }
   return {

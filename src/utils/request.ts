@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
 import { extend } from 'umi-request';
-// import { history } from 'umi';
+import { history } from 'umi';
 import { message, notification } from 'antd';
-// import { clearSessionToken, getAccessToken, getRefreshToken, getTokenExpireTime } from '../access';
-// import { LoginPageUrl } from './utils';
+import { clearSessionToken, getAccessToken, getRefreshToken, getTokenExpireTime } from '../access';
+import { LoginPageUrl } from './utils';
 
 const codeMessage: Record<number, string> = {
   10000: '系统未知错误，请反馈给管理员',
@@ -56,46 +56,44 @@ function createClient() {
 const request = createClient();
 
 // 更换令牌的时间区间
-// const checkRegion = 5 * 60 * 1000;
+const checkRegion = 5 * 60 * 1000;
 
 request.interceptors.request.use((url: string, options: any) => {
   // console.log('-------------------------')
   console.log('request:', url);
-  // const headers = options.headers ? options.headers : [];
-  // if (headers['Authorization'] === '' || headers['Authorization'] == null) {
-  //   const expireTime = getTokenExpireTime();
-  //   if (expireTime) {
-  //     const left = Number(expireTime) - new Date().getTime();
-  //     const refreshToken = getRefreshToken();
-  //     if (left < checkRegion && refreshToken) {
-  //       if (left < 0) {
-  //         clearSessionToken();
-  //         history.push(LoginPageUrl);
-  //       }
-  //     } else {
-  //       const accessToken = getAccessToken();
-  //       if (accessToken) {
-  //         headers['Authorization'] = `Bearer ${accessToken}`;
-  //       }
-  //     }
-  //   } else {
-  //     clearSessionToken();
-  //     history.push(LoginPageUrl);
-  //     return undefined;
-  //   }
-  //   // console.log(headers)
-  //   return {
-  //     url,
-  //     options: { ...options, headers },
-  //   };
-  // } else {
-
-  // }
-
-  return {
-    url,
-    options,
-  };
+  const headers = options.headers ? options.headers : [];
+  if (headers['Authorization'] === '' || headers['Authorization'] == null) {
+    const expireTime = getTokenExpireTime();
+    if (expireTime) {
+      const left = Number(expireTime) - new Date().getTime();
+      const refreshToken = getRefreshToken();
+      if (left < checkRegion && refreshToken) {
+        if (left < 0) {
+          clearSessionToken();
+          history.push(LoginPageUrl);
+        }
+      } else {
+        const accessToken = getAccessToken();
+        if (accessToken) {
+          headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+      }
+    } else {
+      clearSessionToken();
+      history.push(LoginPageUrl);
+      return undefined;
+    }
+    console.log(headers);
+    return {
+      url,
+      options: { ...options, headers },
+    };
+  } else {
+    return {
+      url,
+      options,
+    };
+  }
 });
 
 // 响应拦截器
@@ -104,22 +102,21 @@ request.interceptors.response.use(async (response: Response) => {
   if (status === 401 || status === 403) {
     const msg = codeMessage[status] || codeMessage[10000];
     message.warn(`${status} ${msg}`);
+  } else if (status === 200) {
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType?.includes('application/json');
+    if (isJson === true) {
+      const resp = response.clone();
+      const data = await resp.json();
+      if (data) {
+        const { code } = data;
+        if (code && code !== 200) {
+          const msg = data.msg || codeMessage[code] || codeMessage[10000];
+          message.warn(`${code} ${msg}`);
+        }
+      }
+    }
   }
-  //  else if (status === 200) {
-  //   const contentType = response.headers.get('content-type');
-  //   const isJson = contentType?.includes('application/json');
-  //   if (isJson === true) {
-  //     const resp = response.clone();
-  //     const data = await resp.json();
-  //     if (data) {
-  //       const { code } = data;
-  //       if (code && code !== 200) {
-  //         const msg = data.msg || codeMessage[code] || codeMessage[10000]
-  //         message.warn(`${code} ${msg}`)
-  //       }
-  //     }
-  //   }
-  // }
   return response;
 });
 
