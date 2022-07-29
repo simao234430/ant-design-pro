@@ -5,6 +5,8 @@ export const titles: Record<string, string> = {
   '/dashboard/analysis': '分析页',
   '/dashboard/monitor': '监控页',
   '/dashboard/workplace': '工作台',
+  '/account/center': '个人中心',
+  '/account/settings': '设置',
 };
 
 export default titles;
